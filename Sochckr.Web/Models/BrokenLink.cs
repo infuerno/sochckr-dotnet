@@ -20,6 +20,8 @@ namespace Sochckr.Web.Models
         public string Link { get; set; }
         [DisplayName("Status Code")]
         public int StatusCode { get; set; }
+        // adding this ensure that PostId is not nullable when IF creates the one to many relationship
+        public int PostId { get; set; }
         public virtual Post Post { get; set; }
         public bool IsResolved { get; set; }
 

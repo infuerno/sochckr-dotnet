@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using Sochckr.Web.Models;
 
 namespace Sochckr.Web.Migrations
@@ -35,8 +36,7 @@ namespace Sochckr.Web.Migrations
                         Id = 1,
                         Link = "http://www.bbc.co.uk",
                         StatusCode = 404,
-                        Text = "My favourite site 1",
-                        //Post = _question
+                        Text = "My favourite site 1"
                     },
                     new BrokenLink()
                     {
@@ -44,7 +44,6 @@ namespace Sochckr.Web.Migrations
                         Link = "http://www.bbc.co.uk",
                         StatusCode = 404,
                         Text = "My favourite site 2",
-                        //Post = _question
                     },
                     new BrokenLink()
                     {
@@ -52,7 +51,6 @@ namespace Sochckr.Web.Migrations
                         Link = "http://www.bbc.co.uk",
                         StatusCode = 500,
                         Text = "My favourite site 3",
-                        //Post = _question
                     }
                 }
             });
@@ -62,6 +60,7 @@ namespace Sochckr.Web.Migrations
                 Id = 2,
                 Score = 4,
                 Question = context.Questions.Find(1),
+                QuestionId = 1,
                 BrokenLinks = new List<BrokenLink>()
                 {
                     new BrokenLink()
@@ -73,6 +72,31 @@ namespace Sochckr.Web.Migrations
                     }
                 }
             });
+
+            var values = Enum.GetValues(typeof(HttpStatusCode));
+            var r = new Random();
+
+            for (int i = 3; i < 1000; i++)
+            {
+                context.Questions.AddOrUpdate(q => q.Id, new Question()
+                {
+                    Id = i,
+                    Title = $"Question{i}",
+                    Score = r.Next(0,10),
+                    BrokenLinks = new List<BrokenLink>()
+                    {
+                        new BrokenLink()
+                        {
+                            Id = i + 2, // starts at 5
+                            Link = $"http://brokenlink{i}",
+                            StatusCode = (int)values.GetValue(r.Next(values.Length)),
+                            Text = $"My favourite site . {i}"
+                        }
+                    }
+                });
+            }
+
+            context.SaveChanges();
 
         }
     }

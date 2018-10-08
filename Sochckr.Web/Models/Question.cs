@@ -7,7 +7,7 @@ namespace Sochckr.Web.Models
 {
     public class Question : Post
     {
-        public List<Answer> Answers { get; set; }
+        public ICollection<Answer> Answers { get; set; }
         public bool IsAnswered { get; set; }
         public string Title { get; set; }
     }

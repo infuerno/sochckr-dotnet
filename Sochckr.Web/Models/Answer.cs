@@ -8,6 +8,7 @@ namespace Sochckr.Web.Models
 {
     public class Answer : Post
     {
+        public int QuestionId { get; set; }
         public Question Question { get; set; }
     }
 }

@@ -8,6 +8,10 @@ namespace Sochckr.Web.Models
 {
     public class SochckrDbContext : DbContext
     {
+        public SochckrDbContext()
+        {
+        }
+
         public DbSet<Post> Posts { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }

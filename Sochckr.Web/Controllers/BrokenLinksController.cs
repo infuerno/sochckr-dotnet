@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sochckr.Web.Clients;
+using Sochckr.Web.Commands;
 using Sochckr.Web.Models;
 
 namespace Sochckr.Web.Controllers
@@ -12,13 +14,41 @@ namespace Sochckr.Web.Controllers
         //private static List<BrokenLink> _brokenLinks;
         private SochckrDbContext _db = new SochckrDbContext();
 
+        public ActionResult Autocomplete(string term)
+        {
+            var model = _db.BrokenLinks
+                .Where(bl => bl.StatusCode.ToString().StartsWith(term))
+                .GroupBy(bl => bl.StatusCode)
+                .Select(bl => new
+                {
+                    label = bl.Key
+                });
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: BrokenLinks
         public ActionResult Index(int statusCode = 0)
         {
             var model = _db.BrokenLinks
                 .Where(bl => statusCode == 0 || bl.StatusCode == statusCode)
-                .OrderByDescending(bl => bl.Post.Score).ToList();
+                .OrderByDescending(bl => bl.Post.Score)
+                .Take(10)
+                .ToList();
+
+            if (Request.IsAjaxRequest())
+                return PartialView("_BrokenLinks", model);
+
             return View(model);
+        }
+
+        public ActionResult Find(string site)
+        {
+            IStackExchangeClient client = new StackExchangeClient();
+            IFindBrokenLinksCommand findBrokenLinksCommand = new FindBrokenLinksCommand(site, client, null, null);
+            findBrokenLinksCommand.Execute();
+
+            return Content("voila");
         }
 
         // GET: BrokenLinks/Details/5
