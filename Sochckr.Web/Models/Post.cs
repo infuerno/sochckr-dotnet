@@ -12,6 +12,6 @@ namespace Sochckr.Web.Models
         public int Id { get; set; }
         public int Score { get; set; }
         public virtual ICollection<BrokenLink> BrokenLinks { get; set; }
-
+        public Site Site { get; set; }
     }
 }

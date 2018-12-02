@@ -9,8 +9,10 @@ namespace Sochckr.Web.Models
     public enum ResolutionReasonType
     {
         None,
-        Edited,
-        EphemeralSite
+        EditedAwaitingModeration,
+        Fixed,
+        EphemeralSite,
+        ContentNoLongerExists
     }
 
     public class BrokenLink

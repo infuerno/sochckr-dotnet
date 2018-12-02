@@ -8,9 +8,29 @@ namespace Sochckr.PostsChecker
 {
     public class PostsCheckerModule : NancyModule
     {
-        public PostsCheckerModule(IPostsCheckerStore postsCheckerStore)
-            : base("/checkposts")
+        private static readonly DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public PostsCheckerModule(IPostsCheckerStore postsCheckerStore, IStackExchangeClient stackExchangeClient)
+            : base("/posts")
         {
+            Get("/check/{site:alpha}/{date:datetime}/{tags?}", parameters =>
+            {
+                var site = (string)parameters.site;
+                var date = ((DateTime)parameters.date).ToUniversalTime(); //todo validate
+                var tags = ((string)parameters.tags)?.Split(','); // todo validate
+
+                return stackExchangeClient.GetPosts(site, date, tags).GetAwaiter().GetResult();
+            });
+
+            Get("/check/{site:alpha}/{date:int}/{tags?}", parameters =>
+            {
+                var site = (string)parameters.site;
+                var date = DateTimeOffset.FromUnixTimeSeconds(parameters.date).DateTime;
+                var tags = (string[])parameters.tags;
+
+                return stackExchangeClient.GetPosts(site, date, tags).GetAwaiter().GetResult();
+            });            
+            
             Get("/status/{id:int}", parameters =>
             {
                 var id = (int)parameters.id;
@@ -19,11 +39,13 @@ namespace Sochckr.PostsChecker
 
             Put("/start", parameters =>
             {
-                // get params from request: site, tags, startdate, enddate
-                var job = new PostsCheckerJob();
+                // get params from request: site, tags, date
 
-                // validate site, get startdate of site
-                // validate startdate
+                // get sites, validate site
+                // get startdate of site, validate date
+                // get tags of site, validate tags
+                
+                var job = new PostsCheckerJob();
 
                 // save details to database
                 var jobId = postsCheckerStore.AddJob(job);

@@ -54,7 +54,8 @@ namespace Sochckr.Web.Controllers
         // GET: BrokenLinks/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            throw new NotImplementedException();
+            //return View();
         }
 
         // GET: BrokenLinks/Resolve/5
@@ -80,7 +81,8 @@ namespace Sochckr.Web.Controllers
         // GET: BrokenLinks/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            throw new NotImplementedException();
+            //return View();
         }
 
         // POST: BrokenLinks/Delete/5
@@ -95,7 +97,8 @@ namespace Sochckr.Web.Controllers
             }
             catch
             {
-                return View();
+                throw new NotImplementedException();
+                //return View();
             }
         }
 
